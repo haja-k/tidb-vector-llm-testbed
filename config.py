@@ -24,8 +24,13 @@ class Config:
     OPENAI_API_KEY = os.getenv('OPENAI_API_KEY', '')
     
     # Embedding Model Configuration
-    EMBEDDING_MODEL = os.getenv('EMBEDDING_MODEL', 'openai')  # 'openai' or 'huggingface'
+    EMBEDDING_MODEL = os.getenv('EMBEDDING_MODEL', 'openai')  # 'openai', 'huggingface', or 'ollama'
     HUGGINGFACE_MODEL = os.getenv('HUGGINGFACE_MODEL', 'sentence-transformers/all-MiniLM-L6-v2')
+    
+    # Ollama Settings (for locally hosted models)
+    OLLAMA_BASE_URL = os.getenv('OLLAMA_BASE_URL', 'http://localhost:11434')
+    OLLAMA_EMBEDDING_MODEL = os.getenv('OLLAMA_EMBEDDING_MODEL', 'qwen:latest')
+    OLLAMA_LLM_MODEL = os.getenv('OLLAMA_LLM_MODEL', 'llama3:latest')
     
     # Vector Index Configuration
     VECTOR_DIMENSION = int(os.getenv('VECTOR_DIMENSION', '1536'))  # Default for OpenAI
@@ -41,6 +46,9 @@ class Config:
         """Validate required configuration settings."""
         if cls.EMBEDDING_MODEL == 'openai' and not cls.OPENAI_API_KEY:
             raise ValueError("OPENAI_API_KEY is required when using OpenAI embeddings")
+        
+        if cls.EMBEDDING_MODEL == 'ollama' and not cls.OLLAMA_BASE_URL:
+            raise ValueError("OLLAMA_BASE_URL is required when using Ollama embeddings")
         
         if not cls.TIDB_HOST:
             raise ValueError("TIDB_HOST is required")

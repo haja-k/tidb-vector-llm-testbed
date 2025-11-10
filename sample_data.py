@@ -1,6 +1,6 @@
 """
-Sample FAQ dataset for testing and benchmarking.
-Contains common questions and answers about TiDB and vector databases.
+Sample dataset for testing and benchmarking.
+Contains both FAQ format and markdown-based facts about TiDB and vector databases.
 """
 
 SAMPLE_FAQ_DATA = [
@@ -120,3 +120,110 @@ def get_test_queries():
         "What are the performance characteristics of TiDB vector search?",
         "Can I use TiDB for recommendation systems?"
     ]
+
+
+# Sample markdown-based facts about TiDB (alternative to FAQ format)
+SAMPLE_MARKDOWN_FACTS = [
+    """# TiDB Overview
+TiDB is an open-source, distributed SQL database that supports Hybrid Transactional and Analytical Processing (HTAP) workloads. It provides MySQL compatibility and offers horizontal scalability, strong consistency, and high availability across distributed environments.""",
+    
+    """# Vector Search Capabilities
+TiDB includes built-in vector search functionality, enabling storage and querying of high-dimensional vector embeddings. This feature supports similarity search use cases including semantic search, recommendation systems, and Retrieval-Augmented Generation (RAG) applications.""",
+    
+    """# Creating Vector Indexes
+Vector indexes in TiDB are created using the VECTOR data type. The syntax involves adding a VECTOR column and creating an index with distance functions like VEC_COSINE_DISTANCE. Example:
+```sql
+ALTER TABLE documents ADD VECTOR INDEX idx((VEC_COSINE_DISTANCE(embedding)));
+```""",
+    
+    """# Supported Embedding Models
+TiDB vector search is compatible with any embedding model that produces numerical vectors. Common choices include:
+- OpenAI embeddings (1536 dimensions)
+- Sentence-transformers models like all-MiniLM-L6-v2 (384 dimensions)
+- HuggingFace models
+- Locally hosted models via Ollama (Qwen, Llama, etc.)""",
+    
+    """# Vector Dimension Support
+TiDB supports vector dimensions up to 16,000, accommodating most embedding models:
+- OpenAI ada-002: 1536 dimensions
+- BERT variants: 768 dimensions
+- Custom large models: up to 16,000 dimensions""",
+    
+    """# Hybrid Database Architecture
+TiDB combines traditional relational database features with vector search, enabling hybrid queries that filter on structured data while ranking by vector similarity. This unified approach eliminates the need for separate database systems.""",
+    
+    """# Distance Metrics
+TiDB supports multiple distance metrics for vector similarity calculations:
+- Cosine distance (VEC_COSINE_DISTANCE)
+- L2 distance (VEC_L2_DISTANCE)
+- Inner product (VEC_NEGATIVE_INNER_PRODUCT)""",
+    
+    """# RAG Applications
+TiDB is well-suited for Retrieval-Augmented Generation applications. It stores document embeddings and uses vector similarity search to retrieve relevant context for LLM prompts while maintaining transactional consistency.""",
+    
+    """# Performance Optimization
+Optimizing vector search performance in TiDB involves:
+1. Creating appropriate vector indexes
+2. Using batch operations for insertions
+3. Choosing the right distance metric
+4. Considering dimension reduction for high-dimensional vectors
+5. Leveraging TiDB's distributed architecture for scaling""",
+    
+    """# Real-time Vector Search
+TiDB's HTAP architecture enables real-time vector search with low latency. Both transactional updates and analytical vector searches can be performed on the same dataset without delays or synchronization issues.""",
+    
+    """# Language and Framework Support
+TiDB's MySQL compatibility allows integration with various programming languages and frameworks:
+- Python: PyMySQL, SQLAlchemy
+- Java: JDBC
+- Node.js: mysql2
+- Go: go-sql-driver
+- LangChain framework for LLM applications""",
+    
+    """# Migration from Vector Databases
+Migrating from dedicated vector databases (Pinecone, Weaviate) to TiDB involves:
+1. Export vectors and metadata
+2. Create tables with VECTOR columns
+3. Insert data using batch operations
+4. Create vector indexes
+5. Update application code to use TiDB's SQL interface""",
+    
+    """# Hybrid Query Capabilities
+TiDB excels at hybrid queries by combining traditional SQL WHERE clauses for filtering with ORDER BY vector distance functions for similarity ranking. This enables powerful filtering and ranking in a single operation.""",
+    
+    """# Production Readiness
+TiDB's vector search capabilities are production-ready and battle-tested. Many organizations use TiDB for production RAG applications, recommendation systems, and semantic search at scale.""",
+    
+    """# Best Practices for Embeddings
+Best practices for storing embeddings in TiDB:
+1. Normalize vectors before storage
+2. Use appropriate precision (FLOAT vs DOUBLE)
+3. Store metadata alongside vectors for filtering
+4. Create indexes after bulk inserts
+5. Monitor query performance and adjust indexes as needed"""
+]
+
+
+def get_markdown_documents():
+    """
+    Convert markdown facts to document format for ingestion.
+    
+    Returns:
+        List of dictionaries with 'content' and 'metadata' keys
+    """
+    documents = []
+    for idx, markdown_content in enumerate(SAMPLE_MARKDOWN_FACTS):
+        # Extract title from markdown (first line starting with #)
+        lines = markdown_content.strip().split('\n')
+        title = lines[0].replace('#', '').strip() if lines else f"Document {idx}"
+        
+        documents.append({
+            "content": markdown_content,
+            "metadata": {
+                "id": idx,
+                "title": title,
+                "format": "markdown",
+                "type": "fact"
+            }
+        })
+    return documents

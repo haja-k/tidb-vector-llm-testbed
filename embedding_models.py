@@ -1,10 +1,10 @@
 """
 Embedding model loader module.
-Supports OpenAI and HuggingFace embedding models.
+Supports OpenAI, HuggingFace, and Ollama (locally hosted) embedding models.
 """
 
 from typing import List
-from langchain_community.embeddings import OpenAIEmbeddings, HuggingFaceEmbeddings
+from langchain_community.embeddings import OpenAIEmbeddings, HuggingFaceEmbeddings, OllamaEmbeddings
 from config import Config
 
 
@@ -19,7 +19,7 @@ class EmbeddingModelLoader:
         Load embedding model based on configuration.
         
         Args:
-            model_type: Type of model to load ('openai' or 'huggingface')
+            model_type: Type of model to load ('openai', 'huggingface', or 'ollama')
                        If None, uses Config.EMBEDDING_MODEL
         
         Returns:
@@ -34,6 +34,8 @@ class EmbeddingModelLoader:
             return EmbeddingModelLoader._load_openai()
         elif model_type.lower() == 'huggingface':
             return EmbeddingModelLoader._load_huggingface()
+        elif model_type.lower() == 'ollama':
+            return EmbeddingModelLoader._load_ollama()
         else:
             raise ValueError(f"Unsupported embedding model type: {model_type}")
     
@@ -76,12 +78,32 @@ class EmbeddingModelLoader:
         return embeddings
     
     @staticmethod
+    def _load_ollama():
+        """
+        Load Ollama embedding model (locally hosted).
+        
+        Returns:
+            OllamaEmbeddings instance
+        """
+        model_name = Config.OLLAMA_EMBEDDING_MODEL
+        base_url = Config.OLLAMA_BASE_URL
+        
+        embeddings = OllamaEmbeddings(
+            model=model_name,
+            base_url=base_url
+        )
+        
+        print(f"Ollama embeddings loaded successfully: {model_name}")
+        print(f"  - Ollama server: {base_url}")
+        return embeddings
+    
+    @staticmethod
     def get_embedding_dimension(model_type: str = None) -> int:
         """
         Get the dimension of embeddings for a given model type.
         
         Args:
-            model_type: Type of model ('openai' or 'huggingface')
+            model_type: Type of model ('openai', 'huggingface', or 'ollama')
         
         Returns:
             Dimension of the embedding vectors
@@ -93,6 +115,9 @@ class EmbeddingModelLoader:
             return 1536  # OpenAI text-embedding-ada-002 dimension
         elif model_type.lower() == 'huggingface':
             # For all-MiniLM-L6-v2 it's 384, but may vary by model
+            return Config.VECTOR_DIMENSION
+        elif model_type.lower() == 'ollama':
+            # Ollama models vary by model (e.g., qwen has different dimensions)
             return Config.VECTOR_DIMENSION
         else:
             return Config.VECTOR_DIMENSION

@@ -6,7 +6,9 @@ Get started with TiDB Vector LLM Testbed in 5 minutes!
 
 - Python 3.8+
 - TiDB cluster (TiDB Cloud or self-hosted)
-- OpenAI API key (or use HuggingFace models)
+- **Option 1**: Ollama installed locally (free, no API key required)
+- **Option 2**: OpenAI API key
+- **Option 3**: HuggingFace models (local)
 
 ## Installation
 
@@ -26,17 +28,38 @@ cp .env.example .env
 
 Edit `.env` with your credentials:
 
+**Option 1: Using Ollama (Free, Locally Hosted - Recommended)**
+
 ```bash
-# Minimum required configuration
+# TiDB Configuration
 TIDB_HOST=your-tidb-host.com
 TIDB_PORT=4000
 TIDB_USER=your-username
 TIDB_PASSWORD=your-password
 TIDB_DATABASE=vector_testbed
 
-# For OpenAI embeddings (recommended for quick start)
+# Ollama Configuration (no API key required!)
+EMBEDDING_MODEL=ollama
+OLLAMA_BASE_URL=http://localhost:11434
+OLLAMA_EMBEDDING_MODEL=qwen:latest
+OLLAMA_LLM_MODEL=llama3:latest
+VECTOR_DIMENSION=1536  # Check your model's dimension
+```
+
+**Option 2: Using OpenAI**
+
+```bash
+# TiDB Configuration
+TIDB_HOST=your-tidb-host.com
+TIDB_PORT=4000
+TIDB_USER=your-username
+TIDB_PASSWORD=your-password
+TIDB_DATABASE=vector_testbed
+
+# OpenAI Configuration
 OPENAI_API_KEY=sk-your-api-key-here
 EMBEDDING_MODEL=openai
+VECTOR_DIMENSION=1536
 ```
 
 ### 3. Run the Benchmark
@@ -92,9 +115,29 @@ Average Metrics:
 ================================================================================
 ```
 
-## Alternative: Use HuggingFace (No API Key Required)
+## Using Ollama for Local Models
 
-If you don't have an OpenAI API key, use HuggingFace models:
+Ollama allows you to run models like Qwen and Llama locally without any API keys:
+
+1. **Install Ollama**: Visit https://ollama.ai and follow installation instructions
+2. **Pull models**:
+   ```bash
+   ollama pull qwen:latest
+   ollama pull llama3:latest
+   ```
+3. **Verify Ollama is running**:
+   ```bash
+   curl http://localhost:11434
+   ```
+4. **Configure `.env`** as shown in Option 1 above
+5. **Run the benchmark**:
+   ```bash
+   python benchmark.py
+   ```
+
+## Alternative: HuggingFace (No API Key Required)
+
+Use HuggingFace sentence-transformers models:
 
 ```bash
 # In .env file
@@ -111,6 +154,12 @@ python benchmark.py --drop-existing
 
 # Skip ingestion (use existing data)
 python benchmark.py --skip-ingest
+
+# Use markdown format instead of FAQ
+python benchmark.py --markdown
+
+# Combine options
+python benchmark.py --drop-existing --markdown
 ```
 
 ## Next Steps

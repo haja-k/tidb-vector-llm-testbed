@@ -84,15 +84,22 @@ TIDB_USER=your-username
 TIDB_PASSWORD=your-password
 TIDB_DATABASE=vector_testbed
 
-# OpenAI API Key (for OpenAI embeddings)
+# Embedding Model Configuration
+EMBEDDING_MODEL=ollama  # Options: openai, huggingface, ollama
+
+# OpenAI Settings (only if using OpenAI)
 OPENAI_API_KEY=your-openai-api-key
 
-# Embedding Model Configuration
-EMBEDDING_MODEL=openai  # Options: openai, huggingface
+# HuggingFace Settings (only if using HuggingFace)
 HUGGINGFACE_MODEL=sentence-transformers/all-MiniLM-L6-v2
 
+# Ollama Settings (for locally hosted models - no API key required!)
+OLLAMA_BASE_URL=http://localhost:11434
+OLLAMA_EMBEDDING_MODEL=qwen:latest
+OLLAMA_LLM_MODEL=llama3:latest
+
 # Vector Configuration
-VECTOR_DIMENSION=1536  # 1536 for OpenAI, 384 for all-MiniLM-L6-v2
+VECTOR_DIMENSION=1536  # 1536 for OpenAI, 384 for all-MiniLM-L6-v2, varies for Ollama
 TABLE_NAME=documents_vector
 ```
 
@@ -122,6 +129,12 @@ python benchmark.py --drop-existing
 
 # Skip document ingestion (use existing data)
 python benchmark.py --skip-ingest
+
+# Use markdown format instead of FAQ format
+python benchmark.py --markdown
+
+# Combine options
+python benchmark.py --drop-existing --markdown
 ```
 
 ### Using Individual Modules
@@ -280,6 +293,26 @@ Mean Reciprocal Rank (MRR): 1.0000
 
 ## Extending the Testbed
 
+### Using Markdown Format for Documents
+
+The testbed supports both FAQ format and markdown-based facts:
+
+**FAQ Format (default):**
+```bash
+python benchmark.py
+```
+
+**Markdown Format:**
+```bash
+python benchmark.py --markdown
+```
+
+The markdown format is ideal for storing knowledge bases, documentation, or factual content. Each document can include:
+- Headings and subheadings
+- Code blocks
+- Lists and structured content
+- Full markdown syntax
+
 ### Adding Custom Datasets
 
 1. Create your document list:
@@ -293,18 +326,63 @@ custom_documents = [
 ]
 ```
 
-2. Ingest them:
+2. For markdown content:
+```python
+markdown_documents = [
+    {
+        "content": """# Title
+Your markdown content here with **formatting**
+
+- List item 1
+- List item 2
+
+```code
+Example code
+```
+""",
+        "metadata": {"id": 0, "title": "Title", "format": "markdown"}
+    }
+]
+```
+
+3. Ingest them:
 ```python
 manager.ingest_documents(custom_documents)
 ```
 
 ### Using Different Embedding Models
 
+**Option 1: Ollama (Locally Hosted - No API Key Required)**
+
+Perfect for using models like Qwen, Llama, etc. without any paid services:
+
+1. Install and start Ollama: https://ollama.ai/
+2. Pull your desired model: `ollama pull qwen:latest`
+3. Update `.env`:
+```bash
+EMBEDDING_MODEL=ollama
+OLLAMA_BASE_URL=http://localhost:11434
+OLLAMA_EMBEDDING_MODEL=qwen:latest
+OLLAMA_LLM_MODEL=llama3:latest
+VECTOR_DIMENSION=1536  # Check your model's dimension
+```
+
+**Option 2: HuggingFace Models**
+
 Update `.env` to use HuggingFace models:
 ```bash
 EMBEDDING_MODEL=huggingface
 HUGGINGFACE_MODEL=sentence-transformers/all-mpnet-base-v2
 VECTOR_DIMENSION=768
+```
+
+**Option 3: OpenAI**
+
+Update `.env` for OpenAI:
+```bash
+EMBEDDING_MODEL=openai
+OPENAI_API_KEY=your-api-key
+VECTOR_DIMENSION=1536
 ```
 
 ### Custom Evaluation

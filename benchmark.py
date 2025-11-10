@@ -10,7 +10,7 @@ from typing import List, Dict
 from config import Config
 from vector_store import TiDBVectorStoreManager
 from evaluation import RetrievalEvaluator
-from sample_data import get_documents, get_test_queries
+from sample_data import get_documents, get_markdown_documents, get_test_queries
 
 
 def step1_connect_to_tidb():
@@ -69,18 +69,26 @@ def step3_create_vector_index(vector_store_manager: TiDBVectorStoreManager, drop
         return False
 
 
-def step4_ingest_documents(vector_store_manager: TiDBVectorStoreManager):
+def step4_ingest_documents(vector_store_manager: TiDBVectorStoreManager, use_markdown: bool = False):
     """
     Step 4: Ingest and embed sample FAQ or document set.
+    
+    Args:
+        vector_store_manager: Vector store manager instance
+        use_markdown: If True, use markdown format; if False, use FAQ format
     """
     print("\n" + "="*80)
     print("STEP 4: Ingesting and Embedding Documents")
     print("="*80)
     
     try:
-        # Load sample documents
-        documents = get_documents()
-        print(f"Loaded {len(documents)} sample documents (FAQ dataset)")
+        # Load sample documents based on format
+        if use_markdown:
+            documents = get_markdown_documents()
+            print(f"Loaded {len(documents)} sample documents (Markdown facts)")
+        else:
+            documents = get_documents()
+            print(f"Loaded {len(documents)} sample documents (FAQ dataset)")
         
         # Ingest documents (embeddings generated automatically)
         num_ingested = vector_store_manager.ingest_documents(documents)
@@ -218,6 +226,11 @@ def main():
         action='store_true',
         help='Skip document ingestion (use existing data)'
     )
+    parser.add_argument(
+        '--markdown',
+        action='store_true',
+        help='Use markdown format for documents instead of FAQ format'
+    )
     
     args = parser.parse_args()
     
@@ -249,7 +262,7 @@ def main():
         
         # Step 4: Ingest documents
         if not args.skip_ingest:
-            if not step4_ingest_documents(vector_store_manager):
+            if not step4_ingest_documents(vector_store_manager, use_markdown=args.markdown):
                 print("\n✗ Failed at Step 4: Document Ingestion")
                 sys.exit(1)
         else:
