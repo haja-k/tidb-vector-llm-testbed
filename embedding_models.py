@@ -1,123 +1,58 @@
 """
 Embedding model loader module.
-Supports OpenAI, HuggingFace, and Ollama (locally hosted) embedding models.
+Supports remote API models (OpenAI-compatible).
 """
 
 from typing import List
-from langchain_community.embeddings import OpenAIEmbeddings, HuggingFaceEmbeddings, OllamaEmbeddings
+from langchain_community.embeddings import OpenAIEmbeddings
 from config import Config
 
 
 class EmbeddingModelLoader:
     """
-    Factory class for loading different embedding models.
+    Factory class for loading remote API embedding models.
     """
     
     @staticmethod
-    def load_model(model_type: str = None):
+    def load_model():
         """
-        Load embedding model based on configuration.
-        
-        Args:
-            model_type: Type of model to load ('openai', 'huggingface', or 'ollama')
-                       If None, uses Config.EMBEDDING_MODEL
+        Load remote API embedding model based on configuration.
         
         Returns:
             Embedding model instance compatible with LangChain
         """
-        if model_type is None:
-            model_type = Config.EMBEDDING_MODEL
-        
-        print(f"Loading {model_type} embedding model...")
-        
-        if model_type.lower() == 'openai':
-            return EmbeddingModelLoader._load_openai()
-        elif model_type.lower() == 'huggingface':
-            return EmbeddingModelLoader._load_huggingface()
-        elif model_type.lower() == 'ollama':
-            return EmbeddingModelLoader._load_ollama()
-        else:
-            raise ValueError(f"Unsupported embedding model type: {model_type}")
+        print("Loading remote API embedding model...")
+        return EmbeddingModelLoader._load_remote()
+    
+
     
     @staticmethod
-    def _load_openai():
+    def _load_remote():
         """
-        Load OpenAI embedding model.
+        Load remote API embedding model (OpenAI-compatible).
         
         Returns:
             OpenAIEmbeddings instance
         """
-        if not Config.OPENAI_API_KEY:
-            raise ValueError("OPENAI_API_KEY not found in configuration")
+        if not Config.REMOTE_EMBEDDING_API_KEY:
+            raise ValueError("REMOTE_EMBEDDING_API_KEY not found in configuration")
         
         embeddings = OpenAIEmbeddings(
-            openai_api_key=Config.OPENAI_API_KEY,
-            model="text-embedding-ada-002"  # Latest OpenAI embedding model
+            openai_api_key=Config.REMOTE_EMBEDDING_API_KEY,
+            openai_api_base=Config.REMOTE_EMBEDDING_BASE_URL,
+            model=Config.REMOTE_EMBEDDING_MODEL
         )
         
-        print("OpenAI embeddings loaded successfully (dimension: 1536)")
+        print(f"Remote API embeddings loaded successfully: {Config.REMOTE_EMBEDDING_MODEL}")
+        print(f"  - API URL: {Config.REMOTE_EMBEDDING_BASE_URL}")
         return embeddings
     
     @staticmethod
-    def _load_huggingface():
+    def get_embedding_dimension() -> int:
         """
-        Load HuggingFace embedding model.
-        
-        Returns:
-            HuggingFaceEmbeddings instance
-        """
-        model_name = Config.HUGGINGFACE_MODEL
-        
-        embeddings = HuggingFaceEmbeddings(
-            model_name=model_name,
-            model_kwargs={'device': 'cpu'},  # Use 'cuda' for GPU
-            encode_kwargs={'normalize_embeddings': True}
-        )
-        
-        print(f"HuggingFace embeddings loaded successfully: {model_name}")
-        return embeddings
-    
-    @staticmethod
-    def _load_ollama():
-        """
-        Load Ollama embedding model (locally hosted).
-        
-        Returns:
-            OllamaEmbeddings instance
-        """
-        model_name = Config.OLLAMA_EMBEDDING_MODEL
-        base_url = Config.OLLAMA_BASE_URL
-        
-        embeddings = OllamaEmbeddings(
-            model=model_name,
-            base_url=base_url
-        )
-        
-        print(f"Ollama embeddings loaded successfully: {model_name}")
-        print(f"  - Ollama server: {base_url}")
-        return embeddings
-    
-    @staticmethod
-    def get_embedding_dimension(model_type: str = None) -> int:
-        """
-        Get the dimension of embeddings for a given model type.
-        
-        Args:
-            model_type: Type of model ('openai', 'huggingface', or 'ollama')
+        Get the dimension of embeddings for the remote model.
         
         Returns:
             Dimension of the embedding vectors
         """
-        if model_type is None:
-            model_type = Config.EMBEDDING_MODEL
-        
-        if model_type.lower() == 'openai':
-            return 1536  # OpenAI text-embedding-ada-002 dimension
-        elif model_type.lower() == 'huggingface':
-            # For all-MiniLM-L6-v2 it's 384, but may vary by model
-            return Config.VECTOR_DIMENSION
-        elif model_type.lower() == 'ollama':
-            # Ollama models vary by model (e.g., qwen has different dimensions)
-            return Config.VECTOR_DIMENSION
-        else:
-            return Config.VECTOR_DIMENSION
+        return Config.VECTOR_DIMENSION

@@ -21,12 +21,12 @@ SAMPLE_FAQ_DATA = [
     },
     {
         "question": "What embedding models work with TiDB vector search?",
-        "answer": "TiDB vector search works with any embedding model that produces numerical vectors. Popular choices include OpenAI embeddings (1536 dimensions), sentence-transformers models like all-MiniLM-L6-v2 (384 dimensions), and other models from HuggingFace.",
+        "answer": "TiDB vector search works with any embedding model that produces numerical vectors. Popular choices include remote API models like Qwen3-Embedding-8B.",
         "category": "Technical"
     },
     {
         "question": "What is the maximum vector dimension supported by TiDB?",
-        "answer": "TiDB supports vector dimensions up to 16,000. This is sufficient for most common embedding models including OpenAI (1536), BERT variants (768), and larger models.",
+        "answer": "TiDB supports vector dimensions up to 16,000. This is sufficient for most common embedding models including Qwen3-Embedding-8B and custom large models.",
         "category": "Specifications"
     },
     {
@@ -138,15 +138,11 @@ ALTER TABLE documents ADD VECTOR INDEX idx((VEC_COSINE_DISTANCE(embedding)));
     
     """# Supported Embedding Models
 TiDB vector search is compatible with any embedding model that produces numerical vectors. Common choices include:
-- OpenAI embeddings (1536 dimensions)
-- Sentence-transformers models like all-MiniLM-L6-v2 (384 dimensions)
-- HuggingFace models
-- Locally hosted models via Ollama (Qwen, Llama, etc.)""",
+- Remote API models like Qwen3-Embedding-8B""",
     
     """# Vector Dimension Support
 TiDB supports vector dimensions up to 16,000, accommodating most embedding models:
-- OpenAI ada-002: 1536 dimensions
-- BERT variants: 768 dimensions
+- Qwen3-Embedding-8B: varies by model
 - Custom large models: up to 16,000 dimensions""",
     
     """# Hybrid Database Architecture

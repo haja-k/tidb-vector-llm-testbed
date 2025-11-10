@@ -35,7 +35,7 @@ def step1_connect_to_tidb():
 
 def step2_load_embedding_model(vector_store_manager: TiDBVectorStoreManager):
     """
-    Step 2: Load embedding model (OpenAI, HuggingFace, etc.)
+    Step 2: Load embedding model (remote API models)
     """
     print("\n" + "="*80)
     print("STEP 2: Loading Embedding Model")
