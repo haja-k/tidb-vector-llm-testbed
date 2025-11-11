@@ -1,80 +1,121 @@
-# TiDB Vector LLM Testbed
+# TiDB Vector LLM Testbed 🚀
 
-Experimental framework for evaluating TiDB's vector search capabilities with LangChain-based LLM retrieval workflows. Includes setup scripts, indexing pipelines, and retrieval benchmarks to test hybrid query performance and relevance scoring on TiDB's vector database engine.
+[![Python](https://img.shields.io/badge/Python-3.12+-blue.svg)](https://www.python.org/)
+[![TiDB](https://img.shields.io/badge/TiDB-Vector-orange.svg)](https://docs.pingcap.com/tidbcloud/vector-search-overview)
+[![LangChain](https://img.shields.io/badge/LangChain-Integrated-green.svg)](https://python.langchain.com/)
+[![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-## Overview
+A cutting-edge testbed demonstrating advanced vector database capabilities with TiDB, showcasing end-to-end LLM-powered retrieval systems using remote API embeddings.
 
-This testbed provides a complete solution for benchmarking LLM retrieval over TiDB's vector database using LangChain. It demonstrates:
+## 🌟 What This Project Demonstrates
 
-- **TiDB Connection**: Seamless connection to TiDB clusters
-- **Embedding Models**: Support for OpenAI and HuggingFace embeddings
-- **Vector Storage**: Efficient vector indexing and storage in TiDB
-- **Document Ingestion**: Automated embedding generation and storage
-- **LangChain Integration**: Native LangChain Retriever interface
-- **Evaluation Metrics**: Comprehensive precision, recall, NDCG, and latency measurements
+This project showcases expertise in:
 
-## Features
+- **Vector Databases & AI Integration**: Implementing TiDB's vector search with LangChain for semantic retrieval
+- **Full-Stack Data Engineering**: From document ingestion to evaluation metrics
+- **Modern Python Development**: Clean, modular code with comprehensive testing
+- **Performance Benchmarking**: Latency analysis and relevance scoring
+- **Knowledge Base Systems**: Processing and querying large document collections
+- **Remote API Integration**: Working with cloud-hosted embedding models
 
-- ✅ Modular, clean code with comprehensive comments
-- ✅ Support for multiple embedding models (OpenAI, HuggingFace)
-- ✅ Automatic vector index creation and management
-- ✅ Sample FAQ dataset included for immediate testing
-- ✅ LangChain-compatible retriever interface
-- ✅ Comprehensive evaluation metrics (Precision@K, Recall@K, F1, NDCG, MRR)
-- ✅ Latency benchmarking
-- ✅ Easy configuration via environment variables
+## ✨ Key Features
 
-## Project Structure
+- 🔗 **Seamless TiDB Integration**: Direct connection to TiDB Cloud or self-hosted clusters
+- 🧠 **Remote API Embeddings**: Support for OpenAI-compatible remote embedding models (Qwen, Llama, etc.)
+- 📚 **Rich Document Processing**: Markdown-based knowledge base with intelligent chunking
+- ⚡ **High-Performance Retrieval**: Optimized vector indexing and similarity search
+- 📊 **Comprehensive Evaluation**: Precision, Recall, NDCG, MRR, and latency metrics
+- 🛠️ **Modular Architecture**: Clean, extensible codebase for easy customization
+- 🔧 **Flexible Configuration**: Environment-based setup with sensible defaults
+- 📈 **Benchmarking Suite**: Automated performance testing and reporting
+
+## 🛠️ Tech Stack
+
+- **Database**: TiDB Vector Database
+- **AI/ML**: LangChain, Remote API Embeddings (OpenAI-compatible)
+- **Backend**: Python 3.12+, SQLAlchemy, PyMySQL
+- **Data Processing**: Pandas, NumPy, Scikit-learn
+- **Development**: Modern Python packaging (pyproject.toml)
+
+## 📁 Project Structure
 
 ```
 tidb-vector-llm-testbed/
-├── benchmark.py           # Main benchmark orchestration script
-├── config.py              # Configuration management
-├── db_connection.py       # TiDB connection and table management
-├── embedding_models.py    # Embedding model loaders (OpenAI, HuggingFace)
-├── vector_store.py        # TiDB vector store integration with LangChain
-├── evaluation.py          # Evaluation metrics and reporting
-├── sample_data.py         # Sample FAQ dataset for testing
-├── requirements.txt       # Python dependencies
-├── .env.example           # Example environment configuration
-└── README.md              # This file
+├── 📄 benchmark.py           # Main orchestration script
+├── ⚙️ config.py              # Environment configuration
+├── 🗄️ db_connection.py       # TiDB connection & schema management
+├── 🧠 embedding_models.py    # Remote API embedding model loader
+├── 🔍 vector_store.py        # LangChain-compatible vector store
+├── 📊 evaluation.py          # Retrieval metrics & benchmarking
+├── 📚 sample_data.py         # Document loading & preprocessing
+├── 📋 scspedia/              # Knowledge base documents (Sarawak/Malaysia)
+├── 📦 pyproject.toml         # Modern Python packaging
+├── 📋 requirements.txt       # Dependencies
+├── 🔐 .env.example           # Configuration template
+└── 📖 README.md              # This file
 ```
 
-## Installation
+## 🚀 Quick Start
+
+Get up and running in minutes:
+
+```bash
+# Clone and setup
+git clone https://github.com/haja-k/tidb-vector-llm-testbed.git
+cd tidb-vector-llm-testbed
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Configure environment
+cp .env.example .env
+# Edit .env with your TiDB credentials
+
+# Run the complete benchmark
+python benchmark.py
+```
+
+## 📖 Installation
 
 ### Prerequisites
 
-- Python 3.8 or higher
-- Access to a TiDB cluster (TiDB Cloud or self-hosted)
-- OpenAI API key (if using OpenAI embeddings) or HuggingFace models
+- Python 3.12 or higher
+- TiDB cluster (Cloud or self-hosted)
+- API keys for remote embedding provider
 
-### Setup Steps
+### Detailed Setup
 
-1. **Clone the repository:**
+1. **Clone the repository**
    ```bash
    git clone https://github.com/haja-k/tidb-vector-llm-testbed.git
    cd tidb-vector-llm-testbed
    ```
 
-2. **Install dependencies:**
+2. **Create virtual environment (recommended)**
+   ```bash
+   python -m venv venv
+   source venv/bin/activate  # On Windows: venv\Scripts\activate
+   ```
+
+3. **Install dependencies**
    ```bash
    pip install -r requirements.txt
    ```
 
-3. **Configure environment:**
+4. **Configure environment variables**
    ```bash
    cp .env.example .env
-   # Edit .env with your TiDB connection details and API keys
+   # Edit .env with your settings
    ```
 
-4. **Set up TiDB:**
-   - Ensure your TiDB cluster is running and accessible
-   - Create a database for the testbed (or use an existing one)
-   - Update the `.env` file with your connection details
+5. **Set up TiDB**
+   - Create a TiDB Cloud account or set up self-hosted TiDB
+   - Create a database for testing
+   - Update `.env` with connection details
 
-## Configuration
+## ⚙️ Configuration
 
-Edit the `.env` file with your settings:
+The `.env` file supports remote API embedding models:
 
 ```bash
 # TiDB Connection
@@ -84,22 +125,136 @@ TIDB_USER=your-username
 TIDB_PASSWORD=your-password
 TIDB_DATABASE=vector_testbed
 
-# Embedding Model Configuration
-EMBEDDING_MODEL=ollama  # Options: openai, huggingface, ollama
+# Remote API Settings (for Qwen and other OpenAI-compatible models)
+REMOTE_EMBEDDING_BASE_URL=https://api.example.com/v1
+REMOTE_EMBEDDING_API_KEY=your-embedding-api-key
+REMOTE_EMBEDDING_MODEL=Qwen/Qwen3-Embedding-8B
 
-# OpenAI Settings (only if using OpenAI)
-OPENAI_API_KEY=your-openai-api-key
+REMOTE_LLM_BASE_URL=https://api.example.com/v1
+REMOTE_LLM_API_KEY=your-llm-api-key
+REMOTE_LLM_MODEL=Infermatic/Llama-3.3-70B-Instruct-FP8-Dynamic
 
-# HuggingFace Settings (only if using HuggingFace)
-HUGGINGFACE_MODEL=sentence-transformers/all-MiniLM-L6-v2
+# Vector dimensions (must match your model)
+VECTOR_DIMENSION=1536
+```
 
-# Ollama Settings (for locally hosted models - no API key required!)
-OLLAMA_BASE_URL=http://localhost:11434
-OLLAMA_EMBEDDING_MODEL=qwen:latest
-OLLAMA_LLM_MODEL=llama3:latest
+## 🎯 Usage
+
+### Complete Benchmark Pipeline
+
+Run the full 6-step workflow:
+
+```bash
+python benchmark.py
+```
+
+This executes:
+1. ✅ Validate configuration
+2. ✅ Load embedding model
+3. ✅ Create vector tables and indexes
+4. ✅ Ingest and embed documents
+5. ✅ Set up LangChain retriever
+6. ✅ Evaluate performance metrics
+
+### Command Options
+
+```bash
+# Fresh start (drop existing data)
+python benchmark.py --drop-existing
+
+# Skip ingestion (reuse existing embeddings)
+python benchmark.py --skip-ingest
+
+# Use full documents instead of chunks
+python benchmark.py --markdown
+```
+
+### Programmatic Usage
+
+Use components in your own applications:
+
+```python
+from vector_store import TiDBVectorStoreManager
+from sample_data import get_documents
+
+# Initialize vector store
+manager = TiDBVectorStoreManager()
+manager.initialize()
+
+# Load and ingest documents
+documents = get_documents()
+manager.ingest_documents(documents)
+
+# Create retriever for queries
+retriever = manager.get_retriever(k=5)
+results = retriever.get_relevant_documents("What is Sarawak?")
+
+for doc in results:
+    print(f"Content: {doc.page_content[:200]}...")
+```
+
+## 📊 Sample Dataset
+
+The testbed includes a comprehensive knowledge base of **13 documents** about Sarawak, Malaysia:
+
+- Federal Constitution
+- State Constitution of Sarawak
+- Cabinet and Premier information
+- Economic development plans (PCDS 2030)
+- Digital economy blueprint
+- Cultural and geographical facts
+- Government orders and policies
+
+Documents are automatically chunked for optimal retrieval performance.
+
+## 📈 Evaluation Metrics
+
+Comprehensive benchmarking includes:
+
+- **Precision@K & Recall@K**: Relevance accuracy
+- **F1 Score**: Balanced precision/recall metric
+- **NDCG@K**: Ranking quality assessment
+- **MRR**: Mean Reciprocal Rank
+- **Latency Analysis**: Response time statistics
+
+## 🏆 Skills Demonstrated
+
+This project highlights proficiency in:
+
+- **Database Engineering**: Vector database design, indexing, and optimization
+- **AI/ML Integration**: Embedding models, semantic search, and LLM workflows
+- **Software Architecture**: Modular design, dependency injection, and clean code
+- **Data Pipeline Development**: ETL processes, document processing, and chunking strategies
+- **Performance Engineering**: Benchmarking, latency optimization, and metrics analysis
+- **DevOps Practices**: Environment configuration, dependency management, and deployment
+- **API Integration**: Working with remote AI services and cloud APIs
+
+## 🤝 Contributing
+
+Contributions welcome! Areas for improvement:
+
+- Additional embedding model support
+- Custom evaluation metrics
+- UI dashboard for results visualization
+- Multi-language document support
+- Distributed deployment patterns
+
+## 📄 License
+
+MIT License - see [LICENSE](LICENSE) for details.
+
+## 🔗 Resources
+
+- [TiDB Vector Search Documentation](https://docs.pingcap.com/tidbcloud/vector-search-overview)
+- [LangChain Python Docs](https://python.langchain.com/)
+- [OpenAI Embeddings Guide](https://platform.openai.com/docs/guides/embeddings)
+
+---
+
+**Built with ❤️ for demonstrating cutting-edge AI database technologies**
 
 # Vector Configuration
-VECTOR_DIMENSION=1536  # 1536 for OpenAI, 384 for all-MiniLM-L6-v2, varies for Ollama
+VECTOR_DIMENSION=1536  # Dimension of your remote embedding model
 TABLE_NAME=documents_vector
 ```
 
@@ -155,11 +310,7 @@ db.create_vector_table()
 ```python
 from embedding_models import EmbeddingModelLoader
 
-# Load OpenAI embeddings
-embeddings = EmbeddingModelLoader.load_model('openai')
-
-# Or load HuggingFace embeddings
-embeddings = EmbeddingModelLoader.load_model('huggingface')
+embeddings = EmbeddingModelLoader.load_model()
 ```
 
 #### Ingest Documents
@@ -233,12 +384,12 @@ STEP 1: Connecting to TiDB Cluster
 ✓ Configuration validated
   - Host: gateway01.us-east-1.prod.aws.tidbcloud.com:4000
   - Database: vector_testbed
-  - Embedding Model: openai
+  - Embedding Model: Qwen/Qwen3-Embedding-8B
 
 STEP 2: Loading Embedding Model
 ================================================================================
-Loading openai embedding model...
-OpenAI embeddings loaded successfully (dimension: 1536)
+Loading remote API embedding model...
+Remote API embeddings loaded successfully (dimension: 1536)
 ✓ Embedding model loaded successfully
 
 STEP 3: Creating Vector Index Table
@@ -252,10 +403,10 @@ Vector index created successfully.
 
 STEP 4: Ingesting and Embedding Documents
 ================================================================================
-Loaded 15 sample documents (FAQ dataset)
-Ingesting 15 documents...
-Successfully ingested 15 documents with embeddings.
-✓ Successfully ingested 15 documents with embeddings
+Loaded 13 sample documents (scspedia dataset)
+Ingesting 13 documents...
+Successfully ingested 13 documents with embeddings.
+✓ Successfully ingested 13 documents with embeddings
 
 STEP 5: Querying Through LangChain Retriever
 ================================================================================
@@ -350,39 +501,21 @@ Example code
 manager.ingest_documents(custom_documents)
 ```
 
-### Using Different Embedding Models
+### Using Remote API Embedding Models
 
-**Option 1: Ollama (Locally Hosted - No API Key Required)**
+The testbed supports OpenAI-compatible remote API models. You can use any embedding service that follows the OpenAI API format, such as:
 
-Perfect for using models like Qwen, Llama, etc. without any paid services:
+- **Qwen Models**: Qwen/Qwen3-Embedding-8B
+- **Llama Models**: Various Llama-based embedding models
+- **Other OpenAI-compatible APIs**: Any service with OpenAI-compatible endpoints
 
-1. Install and start Ollama: https://ollama.ai/
-2. Pull your desired model: `ollama pull qwen:latest`
-3. Update `.env`:
+Configure your API provider in `.env`:
+
 ```bash
-EMBEDDING_MODEL=ollama
-OLLAMA_BASE_URL=http://localhost:11434
-OLLAMA_EMBEDDING_MODEL=qwen:latest
-OLLAMA_LLM_MODEL=llama3:latest
+REMOTE_EMBEDDING_BASE_URL=https://your-api-provider.com/v1
+REMOTE_EMBEDDING_API_KEY=your-api-key
+REMOTE_EMBEDDING_MODEL=your-model-name
 VECTOR_DIMENSION=1536  # Check your model's dimension
-```
-
-**Option 2: HuggingFace Models**
-
-Update `.env` to use HuggingFace models:
-```bash
-EMBEDDING_MODEL=huggingface
-HUGGINGFACE_MODEL=sentence-transformers/all-mpnet-base-v2
-VECTOR_DIMENSION=768
-```
-
-**Option 3: OpenAI**
-
-Update `.env` for OpenAI:
-```bash
-EMBEDDING_MODEL=openai
-OPENAI_API_KEY=your-api-key
-VECTOR_DIMENSION=1536
 ```
 
 ### Custom Evaluation
@@ -412,9 +545,10 @@ for query, relevant_ids in ground_truth.items():
 - Ensure TiDB user has appropriate permissions
 
 ### Embedding Issues
-- For OpenAI: Verify `OPENAI_API_KEY` is set correctly
-- For HuggingFace: First run may download models (requires internet)
+- Verify `REMOTE_EMBEDDING_API_KEY` and `REMOTE_EMBEDDING_BASE_URL` are set correctly
+- Ensure your API provider supports OpenAI-compatible endpoints
 - Check `VECTOR_DIMENSION` matches your embedding model
+- Verify API connectivity and authentication
 
 ### Performance Issues
 - Create vector indexes for better search performance
@@ -428,14 +562,6 @@ Contributions are welcome! Please feel free to submit issues or pull requests.
 ## License
 
 This project is licensed under the terms of the LICENSE file.
-
-## Resources
-
-- [TiDB Documentation](https://docs.pingcap.com/tidb/stable)
-- [TiDB Vector Search Guide](https://docs.pingcap.com/tidbcloud/vector-search-overview)
-- [LangChain Documentation](https://python.langchain.com/docs/get_started/introduction)
-- [OpenAI Embeddings](https://platform.openai.com/docs/guides/embeddings)
-- [HuggingFace Sentence Transformers](https://www.sbert.net/)
 
 ## Support
 
