@@ -20,23 +20,18 @@ class Config:
     TIDB_PASSWORD = os.getenv('TIDB_PASSWORD', '')
     TIDB_DATABASE = os.getenv('TIDB_DATABASE', 'vector_testbed')
     
-    # OpenAI Settings
-    OPENAI_API_KEY = os.getenv('OPENAI_API_KEY', '')
+    # Remote API Settings (for Qwen and other models)
+    REMOTE_EMBEDDING_BASE_URL = os.getenv('REMOTE_EMBEDDING_BASE_URL', '')
+    REMOTE_EMBEDDING_API_KEY = os.getenv('REMOTE_EMBEDDING_API_KEY', '')
+    REMOTE_EMBEDDING_MODEL = os.getenv('REMOTE_EMBEDDING_MODEL', 'Qwen/Qwen3-Embedding-8B')
     
-    # Embedding Model Configuration
-    EMBEDDING_MODEL = os.getenv('EMBEDDING_MODEL', 'openai')  # 'openai', 'huggingface', or 'ollama'
-    HUGGINGFACE_MODEL = os.getenv('HUGGINGFACE_MODEL', 'sentence-transformers/all-MiniLM-L6-v2')
-    
-    # Ollama Settings (for locally hosted models)
-    OLLAMA_BASE_URL = os.getenv('OLLAMA_BASE_URL', 'http://localhost:11434')
-    OLLAMA_EMBEDDING_MODEL = os.getenv('OLLAMA_EMBEDDING_MODEL', 'qwen:latest')
-    OLLAMA_LLM_MODEL = os.getenv('OLLAMA_LLM_MODEL', 'llama3:latest')
+    REMOTE_LLM_BASE_URL = os.getenv('REMOTE_LLM_BASE_URL', '')
+    REMOTE_LLM_API_KEY = os.getenv('REMOTE_LLM_API_KEY', '')
+    REMOTE_LLM_MODEL = os.getenv('REMOTE_LLM_MODEL', 'Infermatic/Llama-3.3-70B-Instruct-FP8-Dynamic')
     
     # Vector Index Configuration
-    VECTOR_DIMENSION = int(os.getenv('VECTOR_DIMENSION', '1536'))  # Default for OpenAI
-    TABLE_NAME = os.getenv('TABLE_NAME', 'documents_vector')
-    
-    @classmethod
+    VECTOR_DIMENSION = int(os.getenv('VECTOR_DIMENSION', '1536'))
+    TABLE_NAME = os.getenv('TABLE_NAME', 'documents_vector')    @classmethod
     def get_tidb_connection_string(cls):
         """Generate TiDB connection string for SQLAlchemy."""
         return f"mysql+pymysql://{cls.TIDB_USER}:{cls.TIDB_PASSWORD}@{cls.TIDB_HOST}:{cls.TIDB_PORT}/{cls.TIDB_DATABASE}"
@@ -44,13 +39,10 @@ class Config:
     @classmethod
     def validate(cls):
         """Validate required configuration settings."""
-        if cls.EMBEDDING_MODEL == 'openai' and not cls.OPENAI_API_KEY:
-            raise ValueError("OPENAI_API_KEY is required when using OpenAI embeddings")
-        
-        if cls.EMBEDDING_MODEL == 'ollama' and not cls.OLLAMA_BASE_URL:
-            raise ValueError("OLLAMA_BASE_URL is required when using Ollama embeddings")
-        
+        if not cls.REMOTE_EMBEDDING_BASE_URL:
+            raise ValueError("REMOTE_EMBEDDING_BASE_URL is required")
+        if not cls.REMOTE_EMBEDDING_API_KEY:
+            raise ValueError("REMOTE_EMBEDDING_API_KEY is required")
         if not cls.TIDB_HOST:
             raise ValueError("TIDB_HOST is required")
-        
         return True

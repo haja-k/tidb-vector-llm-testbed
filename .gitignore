@@ -25,6 +25,7 @@ wheels/
 .installed.cfg
 *.egg
 MANIFEST
+.python-version
 
 # Virtual environments
 venv/
@@ -50,7 +51,7 @@ venv.bak/
 htmlcov/
 .tox/
 
-# Models (HuggingFace cache)
+# Models
 models/
 *.bin
 *.pt
@@ -64,3 +65,6 @@ logs/
 tmp/
 temp/
 *.tmp
+
+# Sample data files
+scspedia/
