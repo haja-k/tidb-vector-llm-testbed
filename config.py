@@ -31,7 +31,9 @@ class Config:
     
     # Vector Index Configuration
     VECTOR_DIMENSION = int(os.getenv('VECTOR_DIMENSION', '1536'))
-    TABLE_NAME = os.getenv('TABLE_NAME', 'documents_vector')    @classmethod
+    TABLE_NAME = os.getenv('TABLE_NAME', 'documents_vector')
+    
+    @classmethod
     def get_tidb_connection_string(cls):
         """Generate TiDB connection string for SQLAlchemy."""
         return f"mysql+pymysql://{cls.TIDB_USER}:{cls.TIDB_PASSWORD}@{cls.TIDB_HOST}:{cls.TIDB_PORT}/{cls.TIDB_DATABASE}"
