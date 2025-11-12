@@ -26,7 +26,7 @@ def step1_connect_to_tidb():
         print(f"✓ Configuration validated")
         print(f"  - Host: {Config.TIDB_HOST}:{Config.TIDB_PORT}")
         print(f"  - Database: {Config.TIDB_DATABASE}")
-        print(f"  - Embedding Model: {Config.EMBEDDING_MODEL}")
+        print(f"  - Embedding Model: {Config.REMOTE_EMBEDDING_MODEL}")
         return True
     except Exception as e:
         print(f"✗ Configuration error: {e}")

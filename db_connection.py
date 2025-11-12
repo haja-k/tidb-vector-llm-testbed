@@ -19,7 +19,7 @@ class DocumentVector(Base):
     
     id = Column(Integer, primary_key=True, autoincrement=True)
     content = Column(Text, nullable=False)
-    metadata = Column(Text)  # JSON string for metadata
+    meta = Column(Text)  # JSON string for metadata
     embedding = Column(VectorType(dim=Config.VECTOR_DIMENSION), nullable=False)
 
 
