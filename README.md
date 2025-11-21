@@ -5,7 +5,7 @@
 [![LangChain](https://img.shields.io/badge/LangChain-Integrated-green.svg)](https://python.langchain.com/)
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-A cutting-edge testbed demonstrating advanced vector database capabilities with TiDB, showcasing end-to-end LLM-powered retrieval systems using remote API embeddings.
+A cutting-edge testbed demonstrating advanced vector database capabilities with TiDB, showcasing end-to-end LLM-powered retrieval systems using remote API embeddings, including support for self-hosted models like Qwen.
 
 ## 🌟 What This Project Demonstrates
 
@@ -16,12 +16,13 @@ This project showcases expertise in:
 - **Modern Python Development**: Clean, modular code with comprehensive testing
 - **Performance Benchmarking**: Latency analysis and relevance scoring
 - **Knowledge Base Systems**: Processing and querying large document collections
-- **Remote API Integration**: Working with cloud-hosted embedding models
+- **Remote API Integration**: Working with cloud-hosted and self-hosted embedding models
+- **Custom AI Implementations**: Building custom embedding classes for specialized use cases
 
 ## ✨ Key Features
 
 - 🔗 **Seamless TiDB Integration**: Direct connection to TiDB Cloud or self-hosted clusters
-- 🧠 **Remote API Embeddings**: Support for OpenAI-compatible remote embedding models (Qwen, Llama, etc.)
+- 🧠 **Remote API Embeddings**: Support for OpenAI-compatible remote embedding models, including custom implementations for self-hosted models like Qwen
 - 📚 **Rich Document Processing**: Markdown-based knowledge base with intelligent chunking
 - ⚡ **High-Performance Retrieval**: Optimized vector indexing and similarity search
 - 📊 **Comprehensive Evaluation**: Precision, Recall, NDCG, MRR, and latency metrics
@@ -32,7 +33,7 @@ This project showcases expertise in:
 ## 🛠️ Tech Stack
 
 - **Database**: TiDB Vector Database
-- **AI/ML**: LangChain, Remote API Embeddings (OpenAI-compatible)
+- **AI/ML**: LangChain, Custom OpenAI-compatible embeddings for self-hosted models
 - **Backend**: Python 3.12+, SQLAlchemy, PyMySQL
 - **Data Processing**: Pandas, NumPy, Scikit-learn
 - **Development**: Modern Python packaging (pyproject.toml)
@@ -44,13 +45,14 @@ tidb-vector-llm-testbed/
 ├── 📄 benchmark.py           # Main orchestration script
 ├── ⚙️ config.py              # Environment configuration
 ├── 🗄️ db_connection.py       # TiDB connection & schema management
-├── 🧠 embedding_models.py    # Remote API embedding model loader
+├── 🧠 embedding_models.py    # Custom OpenAI-compatible embedding model loader
 ├── 🔍 vector_store.py        # LangChain-compatible vector store
 ├── 📊 evaluation.py          # Retrieval metrics & benchmarking
 ├── 📚 sample_data.py         # Document loading & preprocessing
 ├── 📋 scspedia/              # Knowledge base documents (Sarawak/Malaysia)
 ├── 📦 pyproject.toml         # Modern Python packaging
 ├── 📋 requirements.txt       # Dependencies
+├── 📝 CHANGELOG.md           # Change history
 ├── 🔐 .env.example           # Configuration template
 └── 📖 README.md              # This file
 ```
@@ -126,16 +128,16 @@ TIDB_PASSWORD=your-password
 TIDB_DATABASE=vector_testbed
 
 # Remote API Settings (for Qwen and other OpenAI-compatible models)
-REMOTE_EMBEDDING_BASE_URL=https://api.example.com/v1
+REMOTE_EMBEDDING_BASE_URL=http://your-embedding-api.com/v1/embeddings
 REMOTE_EMBEDDING_API_KEY=your-embedding-api-key
 REMOTE_EMBEDDING_MODEL=Qwen/Qwen3-Embedding-8B
 
-REMOTE_LLM_BASE_URL=https://api.example.com/v1
+REMOTE_LLM_BASE_URL=https://ai-service.sains.com.my/llm/v1
 REMOTE_LLM_API_KEY=your-llm-api-key
 REMOTE_LLM_MODEL=Infermatic/Llama-3.3-70B-Instruct-FP8-Dynamic
 
 # Vector dimensions (must match your model)
-VECTOR_DIMENSION=1536
+VECTOR_DIMENSION=4096
 ```
 
 ## 🎯 Usage
@@ -254,7 +256,7 @@ MIT License - see [LICENSE](LICENSE) for details.
 **Built with ❤️ for demonstrating cutting-edge AI database technologies**
 
 # Vector Configuration
-VECTOR_DIMENSION=1536  # Dimension of your remote embedding model
+VECTOR_DIMENSION=4096  # Dimension of your remote embedding model
 TABLE_NAME=documents_vector
 ```
 
@@ -382,46 +384,50 @@ TiDB Vector LLM Testbed - Benchmark Suite
 STEP 1: Connecting to TiDB Cluster
 ================================================================================
 ✓ Configuration validated
-  - Host: gateway01.us-east-1.prod.aws.tidbcloud.com:4000
+  - Host: your-tidb-host.com:6000
   - Database: vector_testbed
   - Embedding Model: Qwen/Qwen3-Embedding-8B
 
 STEP 2: Loading Embedding Model
 ================================================================================
 Loading remote API embedding model...
-Remote API embeddings loaded successfully (dimension: 1536)
+Remote API embeddings loaded successfully: Qwen/Qwen3-Embedding-8B
+  - API URL: http://your-embedding-api.com/v1/embeddings
 ✓ Embedding model loaded successfully
 
 STEP 3: Creating Vector Index Table
 ================================================================================
-Connecting to TiDB at gateway01.us-east-1.prod.aws.tidbcloud.com:4000...
-Successfully connected to TiDB version: 8.1.0-TiDB-v8.1.0
-Creating vector table documents_vector...
-Creating vector index for similarity search...
-Vector index created successfully.
+Initializing TiDB connection and vector table...
+Connecting to TiDB at your-tidb-host.com:6000...
+Successfully connected to TiDB version: 8.0.11-TiDB-v8.5.2
+Vector table documents_vector already exists.
+Setting up TiFlash replica for vector index...
+TiFlash replica set successfully. Waiting for replica to be available...
+Vector table setup completed successfully.
+TiDB Vector Store initialized successfully.
 ✓ Vector index table created: documents_vector
+  - Vector dimension: 4096
+  - Distance metric: Cosine
 
 STEP 4: Ingesting and Embedding Documents
 ================================================================================
-Loaded 13 sample documents (scspedia dataset)
-Ingesting 13 documents...
-Successfully ingested 13 documents with embeddings.
-✓ Successfully ingested 13 documents with embeddings
+Loaded 8127 sample documents (FAQ dataset)
+✓ Successfully ingested 8127 documents with embeddings
 
 STEP 5: Querying Through LangChain Retriever
 ================================================================================
 Retriever created: similarity search with k=5
-Running 8 test queries...
-✓ Completed 8 queries
+Running 20 test queries...
+✓ Completed 20 queries
 
 STEP 6: Evaluating Retrieval Performance
 ================================================================================
-Mean latency: 45.23 ms
-Median latency: 43.10 ms
+Mean latency: 71.38 ms
+Median latency: 71.59 ms
 
 RETRIEVAL EVALUATION REPORT
 ================================================================================
-Total Queries Evaluated: 8
+Total Queries Evaluated: 20
 
 Average Metrics:
 K = 1:
@@ -435,6 +441,12 @@ K = 3:
   Recall@3:    1.0000
   F1@3:        1.0000
   NDCG@3:      1.0000
+
+K = 5:
+  Precision@5: 0.6000
+  Recall@5:    1.0000
+  F1@5:        0.7500
+  NDCG@5:      1.0000
 
 Mean Reciprocal Rank (MRR): 1.0000
 ================================================================================
@@ -503,9 +515,9 @@ manager.ingest_documents(custom_documents)
 
 ### Using Remote API Embedding Models
 
-The testbed supports OpenAI-compatible remote API models. You can use any embedding service that follows the OpenAI API format, such as:
+The testbed supports OpenAI-compatible remote API models, including self-hosted models. You can use any embedding service that follows the OpenAI API format, such as:
 
-- **Qwen Models**: Qwen/Qwen3-Embedding-8B
+- **Self-hosted Qwen Models**: Qwen/Qwen3-Embedding-8B (as demonstrated)
 - **Llama Models**: Various Llama-based embedding models
 - **Other OpenAI-compatible APIs**: Any service with OpenAI-compatible endpoints
 
@@ -515,7 +527,7 @@ Configure your API provider in `.env`:
 REMOTE_EMBEDDING_BASE_URL=https://your-api-provider.com/v1
 REMOTE_EMBEDDING_API_KEY=your-api-key
 REMOTE_EMBEDDING_MODEL=your-model-name
-VECTOR_DIMENSION=1536  # Check your model's dimension
+VECTOR_DIMENSION=4096  # Check your model's dimension
 ```
 
 ### Custom Evaluation
