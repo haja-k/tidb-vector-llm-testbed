@@ -194,7 +194,7 @@ class RetrievalEvaluator:
         
         for _ in range(num_runs):
             start_time = time.time()
-            _ = retriever.get_relevant_documents(query)
+            _ = retriever.invoke(query)
             end_time = time.time()
             latencies.append((end_time - start_time) * 1000)  # Convert to ms
         

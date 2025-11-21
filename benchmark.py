@@ -26,7 +26,7 @@ def step1_connect_to_tidb():
         print(f"✓ Configuration validated")
         print(f"  - Host: {Config.TIDB_HOST}:{Config.TIDB_PORT}")
         print(f"  - Database: {Config.TIDB_DATABASE}")
-        print(f"  - Embedding Model: {Config.EMBEDDING_MODEL}")
+        print(f"  - Embedding Model: {Config.REMOTE_EMBEDDING_MODEL}")
         return True
     except Exception as e:
         print(f"✗ Configuration error: {e}")
@@ -125,7 +125,7 @@ def step5_query_retriever(vector_store_manager: TiDBVectorStoreManager) -> List[
             print(f"Q: {query}")
             
             # Retrieve documents
-            results = retriever.get_relevant_documents(query)
+            results = retriever.invoke(query)
             
             print(f"Retrieved {len(results)} documents:")
             for j, doc in enumerate(results[:3], 1):  # Show top 3

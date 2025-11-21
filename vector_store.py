@@ -3,9 +3,9 @@ Vector store module for TiDB integration with LangChain.
 Handles document ingestion, embedding, and storage.
 """
 
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Union
 from langchain_community.vectorstores import TiDBVectorStore
-from langchain.schema import Document
+from langchain_core.documents import Document
 from db_connection import TiDBConnection
 from embedding_models import EmbeddingModelLoader
 from config import Config
@@ -51,7 +51,7 @@ class TiDBVectorStoreManager:
         
         # Initialize LangChain TiDB vector store
         self.vector_store = TiDBVectorStore(
-            embedding=self.embeddings,
+            embedding_function=self.embeddings,
             connection_string=Config.get_tidb_connection_string(),
             table_name=Config.TABLE_NAME,
             distance_strategy="cosine"
@@ -59,44 +59,75 @@ class TiDBVectorStoreManager:
         
         print("TiDB Vector Store initialized successfully.")
     
-    def ingest_documents(self, documents: List[Dict[str, Any]]) -> int:
+    def ingest_documents(self, documents: List[Union[Document, dict]]) -> int:
         """
-        Ingest documents into TiDB vector store.
-        Automatically generates embeddings for document content.
+        Ingest documents into the vector store.
+        Checks for existing documents based on source metadata to avoid duplicates.
         
         Args:
-            documents: List of document dictionaries with 'content' and 'metadata' keys
+            documents: List of Document objects or dictionaries with 'page_content' and 'metadata'
         
         Returns:
-            Number of documents ingested
+            Number of documents ingested (excluding duplicates)
         """
         if not self.vector_store:
             raise RuntimeError("Vector store not initialized. Call initialize() first.")
         
-        print(f"\nIngesting {len(documents)} documents...")
-        
-        # Convert to LangChain Document format
+        # Convert dict to LangChain Document if needed
         langchain_docs = []
         for doc in documents:
-            metadata = doc.get('metadata', {})
-            # Convert metadata dict to JSON string for storage
-            metadata_str = json.dumps(metadata) if isinstance(metadata, dict) else str(metadata)
-            
-            langchain_docs.append(
-                Document(
-                    page_content=doc['content'],
-                    metadata={'metadata_json': metadata_str, **metadata}
+            if isinstance(doc, dict):
+                langchain_docs.append(
+                    Document(
+                        page_content=doc.get("page_content", ""),
+                        metadata=doc.get("metadata", {})
+                    )
                 )
-            )
+            else:
+                langchain_docs.append(doc)
         
-        # Add documents to vector store (embeddings generated automatically)
-        try:
-            self.vector_store.add_documents(langchain_docs)
-            print(f"Successfully ingested {len(documents)} documents with embeddings.")
-            return len(documents)
-        except Exception as e:
-            print(f"Error ingesting documents: {e}")
-            raise
+        # Check for existing documents to avoid duplicates
+        from sqlalchemy import select
+        from db_connection import DocumentVector
+        
+        existing_sources = set()
+        with self.db_connection.Session() as session:
+            # Get all existing document sources
+            stmt = select(DocumentVector.meta)
+            results = session.execute(stmt).all()
+            
+            for result in results:
+                if result[0]:  # meta column
+                    import json
+                    try:
+                        metadata = json.loads(result[0])
+                        if "source" in metadata:
+                            existing_sources.add(metadata["source"])
+                    except (json.JSONDecodeError, TypeError):
+                        continue
+        
+        # Filter out documents that already exist
+        new_docs = []
+        skipped_count = 0
+        for doc in langchain_docs:
+            source = doc.metadata.get("source", "")
+            if source and source in existing_sources:
+                skipped_count += 1
+            else:
+                new_docs.append(doc)
+        
+        # Add only new documents to vector store
+        if new_docs:
+            self.vector_store.add_documents(new_docs)
+            print(f"Ingested {len(new_docs)} new documents into TiDB Vector Store")
+        
+        if skipped_count > 0:
+            print(f"Skipped {skipped_count} duplicate documents")
+        
+        if not new_docs and skipped_count > 0:
+            print("All documents already exist in the database")
+        
+        return len(new_docs)
     
     def get_retriever(self, search_type="similarity", k=5, **kwargs):
         """

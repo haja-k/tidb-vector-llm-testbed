@@ -20,6 +20,15 @@ try:
         cursor.execute("SELECT VERSION();")
         result = cursor.fetchone()
         print(f"Connected successfully! TiDB version: {result[0]}")
+
+        # Test user permissions
+        cursor.execute("SELECT USER();")
+        user_result = cursor.fetchone()
+        print(f"Connected as: {user_result[0]}")
+
     connection.close()
+except pymysql.Error as e:
+    print(f"MySQL/TiDB Error: {e}")
+    print("Check credentials, permissions, and TiProxy setup.")
 except Exception as e:
-    print(f"Connection failed: {e}")
+    print(f"General error: {e}")
