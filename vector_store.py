@@ -51,7 +51,7 @@ class TiDBVectorStoreManager:
         
         # Initialize LangChain TiDB vector store
         self.vector_store = TiDBVectorStore(
-            embedding=self.embeddings,
+            embedding_function=self.embeddings,
             connection_string=Config.get_tidb_connection_string(),
             table_name=Config.TABLE_NAME,
             distance_strategy="cosine"

@@ -30,7 +30,7 @@ class Config:
     REMOTE_LLM_MODEL = os.getenv('REMOTE_LLM_MODEL', 'Infermatic/Llama-3.3-70B-Instruct-FP8-Dynamic')
     
     # Vector Index Configuration
-    VECTOR_DIMENSION = int(os.getenv('VECTOR_DIMENSION', '1536'))
+    VECTOR_DIMENSION = int(os.getenv('VECTOR_DIMENSION', '4096'))
     TABLE_NAME = os.getenv('TABLE_NAME', 'documents_vector')
     
     @classmethod

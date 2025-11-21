@@ -125,7 +125,7 @@ def step5_query_retriever(vector_store_manager: TiDBVectorStoreManager) -> List[
             print(f"Q: {query}")
             
             # Retrieve documents
-            results = retriever.get_relevant_documents(query)
+            results = retriever.invoke(query)
             
             print(f"Retrieved {len(results)} documents:")
             for j, doc in enumerate(results[:3], 1):  # Show top 3
